@@ -12,11 +12,13 @@ A self-management container(UIScrollView) of views(UIView) for iOS (iPhone/iPad)
 * iOS 4 or later.
 * Xcode 4.2 (CXAdjustBlockView uses ARC)
 * Frameworks: Foundation, UIKit, CoreGraphics and QuartzCore.
+
 ---
 ##Contact
 * Facebook - https://www.facebook.com/weize.xu
 * Twitter - https://twitter.com/taterctl
 * E-mail - taterctl@gmail.com
+
 ---
 ##License
 
