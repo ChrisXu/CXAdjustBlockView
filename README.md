@@ -4,10 +4,22 @@ CXAdjustBlockView
 A self-management container(UIScrollView) of views(UIView) for iOS (iPhone/iPad) that make all the views linked on one direction relationship with animation scaling.
 
 ---
+**How to use**
+
+```Objective-C 
+containerView = [[CXBlockScrollView alloc] initWithFrame:<#(CGRect)#>];
+```
+
+```Objective-C 
+UIView *someView = [[UIView alloc] initWithFrame:CGRectMake( 20, 0, 240, 20)];
+            [containerView addBlockview:someView withSpacing:10];
+```
+
 **Coming soon**:
 * Remove blockView
 * Reuse
 * Animation tuning
+
 **Supports**:
 * iOS 4 or later.
 * Xcode 4.2 (CXAdjustBlockView uses ARC)
