@@ -11,7 +11,7 @@ A self-management container(UIScrollView) of views(UIView) for iOS (iPhone/iPad)
 ```Objective-C 
 containerView = [[CXBlockScrollView alloc] initWithFrame:<#(CGRect)#>];
 ```
-*Use addBlockview:withSpacing: to add views to container.(The x-axis value will assign as horizontal offset, and y-axis value must be zeor. You could assign vertical offset with spacing.
+*Use addBlockview:withSpacing: to add views to container.(The x-axis value will be assign as horizontal offset, and y-axis value must be zero. You could assign vertical offset with spacing.
  Recommend to add each view as a blockview object in container.)
  
 ```Objective-C 
