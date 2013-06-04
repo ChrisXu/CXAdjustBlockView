@@ -31,9 +31,9 @@ UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 
 ---
 ##Contact
-* Facebook - https://www.facebook.com/weize.xu
-* Twitter - https://twitter.com/taterctl
-* E-mail - taterctl@gmail.com
+[Chris Xu](https://github.com/ChrisXu1221)
+[@Tiwtter](https://twitter.com/taterctl)
+[@Mail](taterctl@gmail.com)
 
 ---
 ##License
