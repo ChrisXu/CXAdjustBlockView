@@ -20,7 +20,7 @@ UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 ```
 
 **Coming soon**:
-* Remove blockView
+* Remove blockView (temp finished)
 * Reuse
 * Animation tuning
 
