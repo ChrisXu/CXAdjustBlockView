@@ -74,7 +74,35 @@
 
 - (void)removeBlockview:(UIView *)view
 {
+    NSInteger blockViewsCount = [[self subviews] count];
+    CXAdjustBlockView *previousBlockView = nil;
+    CXAdjustBlockView *currentBlockView = nil;
+    CXAdjustBlockView *nextBlockView = nil;
     
+    for (int i = 0 ; i < blockViewsCount; i++)
+    {
+        currentBlockView = [[self subviews] objectAtIndex:i];
+        for (UIView *targetView in [currentBlockView subviews])
+        {
+            if ([targetView isEqual:view])
+            {
+                [targetView setFrame:CGRectMake(0, 0, 0, 0)];
+                if (i != 0)
+                {
+                    previousBlockView = [[self subviews] objectAtIndex:(i - 1)];
+                }
+                
+                if (i != (blockViewsCount - 1))
+                {
+                    nextBlockView = [[self subviews] objectAtIndex:(i + 1)];
+                    //                    [nextBlockView setLinstener:previousBlockView];
+                }
+                break;
+            }
+        }
+    }
+    //    [blockviews removeObject:currentBlockView];
+    //    [currentBlockView removeCurrentBlockScrollView];
 }
 
 - (CGRect)frameOfBlockvie:(UIView *)view
