@@ -107,6 +107,18 @@
 
 - (CGRect)frameOfBlockvie:(UIView *)view
 {
-    
+    NSInteger blockViewsCount = [[self subviews] count];
+    CXAdjustBlockView *currentBlockView = nil;
+    for (int i = 0 ; i < blockViewsCount; i++)
+    {
+        currentBlockView = [[self subviews] objectAtIndex:i];
+        for (UIView *targetView in [currentBlockView subviews])
+        {
+            if ([targetView isEqual:view])
+            {
+                return currentBlockView.frame;
+            }
+        }
+    }
 }
 @end
