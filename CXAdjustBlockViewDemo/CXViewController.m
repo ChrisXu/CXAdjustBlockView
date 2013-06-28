@@ -8,6 +8,7 @@
 
 #import "CXViewController.h"
 #import "CXBlockScrollView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface CXViewController ()
 {
@@ -15,10 +16,14 @@
     
     CXBlockScrollView *scrollview;
     
-    UILabel *lastLabel;
+    NSInteger number;
 }
 
-- (IBAction)addTenPixel:(id)sender;
+- (void)addDemoBlockview;
+
+- (void)demoBlockviewTapAction:(UITapGestureRecognizer *)tap;
+
+- (void)demoBlockviewSwipAction:(UISwipeGestureRecognizer *)swip;
 
 @end
 
@@ -27,10 +32,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    blockViews = [[NSMutableArray alloc] init];
     
-    scrollview = [[CXBlockScrollView alloc] initWithFrame:CGRectMake(0, 0, 240, 300)];
-    [scrollview setBackgroundColor:[UIColor lightGrayColor]];
+    number = 0;
+        
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addDemoBlockview)];
+    
+    scrollview = [[CXBlockScrollView alloc] initWithFrame:self.view.frame];
+    [scrollview setBackgroundColor:[UIColor blackColor]];
     [self.view addSubview:scrollview];
 }
 
@@ -41,41 +49,64 @@
 }
 
 #pragma mark - IBActions
-- (IBAction)addTenPixel:(id)sender
+- (void)addDemoBlockview
 {
-    switch ([sender tag])
+    NSString *title = [NSString stringWithFormat:@"Blockview #%i",number];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake( 20, 0, 280, 50)];
+    [label setText:title];
+    [label setFont:[UIFont systemFontOfSize:14.]];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setUserInteractionEnabled:YES];
+    
+    [label.layer setMasksToBounds:YES];
+    [label.layer setCornerRadius:4.0];
+    [label.layer setBorderWidth:1.0];
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorRef colorref = CGColorCreate(colorSpace,(CGFloat[]){ 1, 1, 1, 1 });
+    [label.layer setBorderColor:colorref];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(demoBlockviewTapAction:)];
+    [label addGestureRecognizer:tap];
+    
+    UISwipeGestureRecognizer *swip = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(demoBlockviewSwipAction:)];
+    swip.direction = UISwipeGestureRecognizerDirectionRight;
+    [label addGestureRecognizer:swip];
+    
+    [scrollview addBlockview:label withSpacing:10];
+        
+    number ++;
+}
+
+- (void)demoBlockviewTapAction:(UITapGestureRecognizer *)tap
+{
+    NSLog(@"--Size Change--");
+    UILabel *label = (UILabel *)tap.view;
+    
+    if (label.frame.size.height == 50)
     {
-        case 0:
-        {
-            UILabel *demoLabel = [[UILabel alloc] initWithFrame:CGRectMake( 20, 0, 200, 30)];
-            [demoLabel setFont:[UIFont boldSystemFontOfSize:18.f]];
-            [demoLabel setTextColor:[UIColor darkGrayColor]];
-            [demoLabel setTextAlignment:NSTextAlignmentLeft];
-            [demoLabel setBackgroundColor:[UIColor clearColor]];
-            [demoLabel setText:[NSString stringWithFormat:@"No. %i block view",[blockViews count]]];
-            [scrollview addBlockview:demoLabel withSpacing:10];
-            
-            [blockViews addObject:demoLabel];
-            break;
-        }
-        case 1:
-        {
-            NSInteger random = arc4random() % ([blockViews count] - 1);
-            UILabel *demoLabel1 = [blockViews objectAtIndex:random];
-            [demoLabel1 setFrame:CGRectMake(10, 0, 200, 50)];
-            lastLabel = demoLabel1;
-            break;
-        }
-        case 2:
-        {
-            if (lastLabel)
-            {
-                [lastLabel setFrame:CGRectMake( 20, 0, 200, 30)];
-            }
-            break;
-        }
-        default:
-            break;
+        [UIView animateWithDuration:0.3 animations:^{
+            [label setFrame:CGRectMake(20, 0, 280, 100)];
+        }];
     }
+    else
+    {
+        [label setFrame:CGRectMake(20, 0, 280, 50)];
+    }
+}
+
+- (void)demoBlockviewSwipAction:(UISwipeGestureRecognizer *)swip
+{
+    NSLog(@"--Remove--");
+    UILabel *label = (UILabel *)swip.view;
+        
+    [label setBackgroundColor:[UIColor redColor]];
+    [UIView animateWithDuration:0.3 animations:^{
+        [label setAlpha:0.];
+    }completion:^(BOOL finished) {
+        [scrollview removeBlockview:label];
+    }];
 }
 @end

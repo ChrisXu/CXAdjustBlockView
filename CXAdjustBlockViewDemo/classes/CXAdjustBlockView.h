@@ -11,9 +11,14 @@
 #define CXAdjustBlockViewUpdated @"CXAdjustBlockViewUpdated"
 
 @interface CXAdjustBlockView : UIView
-@property (nonatomic) CGFloat space;
+@property (nonatomic) NSInteger bvID;
+@property (nonatomic) CGFloat spacing;
 @property (nonatomic) NSTimeInterval duration;
-- (id)initWithLinstenerView:(UIView *)view;
+
+- (id)initWithLinstenerView:(CXAdjustBlockView *)view;
 
 - (void)updateLayout;
+
+- (void)setLinstener:(CXAdjustBlockView *)view;
+
 @end

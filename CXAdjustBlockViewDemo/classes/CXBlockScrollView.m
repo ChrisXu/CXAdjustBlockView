@@ -11,6 +11,7 @@
 
 @interface CXBlockScrollView ()
 {
+    NSInteger bvTotalCount;
     NSMutableArray *blockviews;
 }
 
@@ -27,6 +28,7 @@
     if (self)
     {
         blockviews = [[NSMutableArray alloc] init];
+        bvTotalCount = 0;
     }
     return self;
 }
@@ -53,12 +55,14 @@
 {
     CXAdjustBlockView *lastBlockView = [blockviews lastObject];
     CXAdjustBlockView *blockView = [[CXAdjustBlockView alloc] initWithLinstenerView:lastBlockView];
+    blockView.bvID = bvTotalCount;
+    blockView.spacing = spacing;
     
+    bvTotalCount ++;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:CXAdjustBlockViewUpdated object:lastBlockView];
     
     CGFloat offsetY = lastBlockView == nil ? 0 : CGRectGetMaxY(lastBlockView.frame);
     [blockView setFrame:CGRectMake( 0, offsetY, self.bounds.size.width, view.frame.size.height + spacing)];
-    
     CGRect replaceFrame = CGRectZero;
     replaceFrame.origin = CGPointMake(view.frame.origin.x, 0);
     replaceFrame.size   = view.frame.size;
@@ -74,38 +78,62 @@
 
 - (void)removeBlockview:(UIView *)view
 {
-    NSInteger blockViewsCount = [[self subviews] count];
+    NSInteger blockViewsCount = [blockviews count];
     CXAdjustBlockView *previousBlockView = nil;
     CXAdjustBlockView *currentBlockView = nil;
     CXAdjustBlockView *nextBlockView = nil;
+    BOOL _exist = NO;
     
     for (int i = 0 ; i < blockViewsCount; i++)
     {
-        currentBlockView = [[self subviews] objectAtIndex:i];
+        currentBlockView = [blockviews objectAtIndex:i];
         for (UIView *targetView in [currentBlockView subviews])
         {
             if ([targetView isEqual:view])
             {
-                [targetView setFrame:CGRectMake(0, 0, 0, 0)];
+                _exist = YES;
                 if (i != 0)
                 {
-                    previousBlockView = [[self subviews] objectAtIndex:(i - 1)];
+                    previousBlockView = [blockviews objectAtIndex:(i - 1)];
                 }
                 
                 if (i != (blockViewsCount - 1))
                 {
-                    nextBlockView = [[self subviews] objectAtIndex:(i + 1)];
-                    //                    [nextBlockView setLinstener:previousBlockView];
+                    nextBlockView = [blockviews objectAtIndex:(i + 1)];
+                    [nextBlockView setLinstener:previousBlockView];
                 }
+                else
+                {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:CXAdjustBlockViewUpdated object:currentBlockView];
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastBlockviewDidFinishUpdated:) name:CXAdjustBlockViewUpdated object:previousBlockView];
+                }
+                
                 break;
             }
         }
+        
+        if (_exist)
+        {
+            break;
+        }
     }
-    //    [blockviews removeObject:currentBlockView];
-    //    [currentBlockView removeCurrentBlockScrollView];
+    [currentBlockView removeFromSuperview];
+    [blockviews removeObject:currentBlockView];
+    
+    if (previousBlockView)
+    {
+        [previousBlockView updateLayout];
+    }
+    else
+    {
+        [UIView animateWithDuration:nextBlockView.duration animations:^{
+            [nextBlockView setFrame:CGRectMake( 0, 0, self.bounds.size.width, nextBlockView.frame.size.height)];
+        }];
+        [nextBlockView updateLayout];
+    }
 }
 
-- (CGRect)frameOfBlockvie:(UIView *)view
+- (CGRect)frameOfBlockview:(UIView *)view
 {
     NSInteger blockViewsCount = [[self subviews] count];
     CXAdjustBlockView *currentBlockView = nil;
@@ -120,5 +148,7 @@
             }
         }
     }
+    
+    return CGRectZero;
 }
 @end

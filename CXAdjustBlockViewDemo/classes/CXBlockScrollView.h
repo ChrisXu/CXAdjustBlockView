@@ -17,7 +17,7 @@
 
 - (void)addBlockview:(UIView *)view withSpacing:(NSUInteger)spacing;
 - (void)removeBlockview:(UIView *)view;
-- (CGRect)frameOfBlockvie:(UIView *)view;
+- (CGRect)frameOfBlockview:(UIView *)view;
 
 @end
 

@@ -13,7 +13,7 @@
 {
     CGFloat maxOffsetYOfSubview;
 }
-@property (nonatomic, assign) UIView *linstenerView;
+@property (nonatomic, assign) CXAdjustBlockView *linstenerView;
 
 - (void)updateLayoutFromLinstener:(NSNotification *)notify;
 
@@ -30,7 +30,7 @@
     return self;
 }
 
-- (id)initWithLinstenerView:(UIView *)view
+- (id)initWithLinstenerView:(CXAdjustBlockView *)view
 {
     self = [super init];
     if (self)
@@ -75,12 +75,13 @@
             maxOffsetYOfSubview = CGRectGetMaxY(subview.frame);
         }
     }
-    CGFloat newHeight = hasSubview ? maxOffsetYOfSubview : self.frame.size.height;
+    CGFloat newHeight = hasSubview ? maxOffsetYOfSubview + self.spacing : self.frame.size.height;
     CGRect updateFrame = self.frame;
     CGSize newSize = CGSizeMake(self.frame.size.width, newHeight);
     if (self.linstenerView)
     {
         updateFrame.origin = CGPointMake(self.frame.origin.x, CGRectGetMaxY(self.linstenerView.frame));
+//        NSLog(@"%i --> %i",self.bvID,self.linstenerView.bvID);
     }
     updateFrame.size = newSize;
     [UIView animateWithDuration:self.duration animations:^{
@@ -90,7 +91,14 @@
      {
          
      }];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:CXAdjustBlockViewUpdated object:self];
 }
 
+- (void)setLinstener:(CXAdjustBlockView *)view
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:CXAdjustBlockViewUpdated object:self.linstenerView];
+    self.linstenerView = view;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayoutFromLinstener:) name:CXAdjustBlockViewUpdated object:view];
+}
 @end
