@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface CXViewController ()
+<CXBlockScrollViewDelegate>
 {
     NSMutableArray *blockViews;
     
@@ -38,6 +39,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addDemoBlockview)];
     
     scrollview = [[CXBlockScrollView alloc] initWithFrame:self.view.frame];
+    [scrollview setBlocksDelegate:self];
     [scrollview setBackgroundColor:[UIColor blackColor]];
     [self.view addSubview:scrollview];
 }
@@ -108,5 +110,11 @@
     }completion:^(BOOL finished) {
         [scrollview removeBlockview:label];
     }];
+}
+
+#pragma mark - CXBlockScrollViewDelegate
+- (void)blockScrollView:(CXBlockScrollView *)scrollview didAnimatedAtIndex:(NSUInteger)index frame:(CGRect)frame;
+{
+    NSLog(@"#%i",index);
 }
 @end

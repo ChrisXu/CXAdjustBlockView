@@ -50,7 +50,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    [self updateLayout];
+    [self updateLayoutWithDelegate:YES];
 }
 
 #pragma mark - PV
@@ -58,13 +58,13 @@
 {
     if ([[notify object] isEqual:self.linstenerView])
     {
-        [self updateLayout];
+        [self updateLayoutWithDelegate:YES];
     }
 }
 
 
 #pragma mark - PB
-- (void)updateLayout
+- (void)updateLayoutWithDelegate:(BOOL)need
 {
     BOOL hasSubview = NO;
     for (UIView *subview in [self subviews])
@@ -89,7 +89,10 @@
         
     } completion:^(BOOL finished)
      {
-         
+         if (need && [self.delegate respondsToSelector:@selector(blockViewDidUpdateFrameWithBVID:)])
+         {
+             [self.delegate blockViewDidUpdateFrameWithBVID:self.bvID];
+         }
      }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:CXAdjustBlockViewUpdated object:self];

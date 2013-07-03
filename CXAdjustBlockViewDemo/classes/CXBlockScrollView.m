@@ -10,6 +10,7 @@
 #import "CXAdjustBlockView.h"
 
 @interface CXBlockScrollView ()
+<CXAdjustBlockViewDelegate>
 {
     NSInteger bvTotalCount;
     NSMutableArray *blockviews;
@@ -48,6 +49,10 @@
     CGFloat height = 0;
     height = CGRectGetMaxY(lastBlockView.frame);
     [self setContentSize:CGSizeMake(self.bounds.size.width, height)];
+    if (_blocksDelegate && [_blocksDelegate respondsToSelector:@selector(blockScrollView:contentSizeDidChangedWithSize:)])
+    {
+        [_blocksDelegate blockScrollView:self contentSizeDidChangedWithSize:CGSizeMake(self.bounds.size.width, height)];
+    }
 }
 
 #pragma mark - PB
@@ -57,6 +62,7 @@
     CXAdjustBlockView *blockView = [[CXAdjustBlockView alloc] initWithLinstenerView:lastBlockView];
     blockView.bvID = bvTotalCount;
     blockView.spacing = spacing;
+    blockView.delegate = self;
     
     bvTotalCount ++;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:CXAdjustBlockViewUpdated object:lastBlockView];
@@ -117,29 +123,30 @@
             break;
         }
     }
+    [currentBlockView setDelegate:nil];
     [currentBlockView removeFromSuperview];
     [blockviews removeObject:currentBlockView];
     
     if (previousBlockView)
     {
-        [previousBlockView updateLayout];
+        [previousBlockView updateLayoutWithDelegate:NO];
     }
     else
     {
         [UIView animateWithDuration:nextBlockView.duration animations:^{
             [nextBlockView setFrame:CGRectMake( 0, 0, self.bounds.size.width, nextBlockView.frame.size.height)];
         }];
-        [nextBlockView updateLayout];
+        [nextBlockView updateLayoutWithDelegate:YES];
     }
 }
 
 - (CGRect)frameOfBlockview:(UIView *)view
 {
-    NSInteger blockViewsCount = [[self subviews] count];
+    NSInteger blockViewsCount = [blockviews count];
     CXAdjustBlockView *currentBlockView = nil;
     for (int i = 0 ; i < blockViewsCount; i++)
     {
-        currentBlockView = [[self subviews] objectAtIndex:i];
+        currentBlockView = [blockviews objectAtIndex:i];
         for (UIView *targetView in [currentBlockView subviews])
         {
             if ([targetView isEqual:view])
@@ -151,4 +158,23 @@
     
     return CGRectZero;
 }
+
+#pragma mark - CXAdjustBlockViewDelegate
+- (void)blockViewDidUpdateFrameWithBVID:(NSUInteger)bvID
+{
+    if (_blocksDelegate && [_blocksDelegate respondsToSelector:@selector(blockScrollView:didAnimatedAtIndex:frame:)])
+    {
+        NSInteger blockViewsCount = [blockviews count];
+        for (int index = 0; index < blockViewsCount; index ++)
+        {
+            CXAdjustBlockView *blockview = [blockviews objectAtIndex:index];
+            if (blockview.bvID == bvID)
+            {
+                [_blocksDelegate blockScrollView:self didAnimatedAtIndex:index frame:blockview.frame];
+                break;
+            }
+        }
+    }
+}
+
 @end

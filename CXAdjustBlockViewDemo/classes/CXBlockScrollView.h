@@ -13,6 +13,7 @@
 @protocol CXBlockScrollViewDelegate;
 
 @interface CXBlockScrollView : UIScrollView
+@property (nonatomic, assign) id<CXBlockScrollViewDelegate> blocksDelegate;
 @property (nonatomic) NSUInteger numbersOfBlockviews;
 
 - (void)addBlockview:(UIView *)view withSpacing:(NSUInteger)spacing;
@@ -23,5 +24,8 @@
 
 @protocol CXBlockScrollViewDelegate <NSObject>
 
+@optional
+- (void)blockScrollView:(CXBlockScrollView *)scrollview contentSizeDidChangedWithSize:(CGSize)size;
+- (void)blockScrollView:(CXBlockScrollView *)scrollview didAnimatedAtIndex:(NSUInteger)index frame:(CGRect)frame;
 
 @end
