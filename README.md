@@ -23,9 +23,18 @@ UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 //someView has been added
 [containerView removeBlockview:someView];
 ```
+
+**Protocol**
+
+*Delegate
+```Objective-C 
+- (void)blockScrollView:(CXBlockScrollView *)scrollview didAnimatedAtIndex:(NSUInteger)index frame:(CGRect)frame;
+```
+
+---
 **Coming soon**:
 * Horizontal layout
-* Reuse
+* Reuse block
 
 **Supports**:
 * iOS 4 or later.
@@ -36,7 +45,7 @@ UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 ##Contact
 [Chris Xu](https://github.com/ChrisXu1221)
 [@Tiwtter](https://twitter.com/taterctl)
-[@Mail](taterctl@gmail.com)
+[@Mail](mailto:taterctl@gmail.com)
 
 ---
 ##License
