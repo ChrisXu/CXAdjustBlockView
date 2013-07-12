@@ -115,6 +115,6 @@
 #pragma mark - CXBlockScrollViewDelegate
 - (void)blockScrollView:(CXBlockScrollView *)scrollview didAnimatedAtIndex:(NSUInteger)index frame:(CGRect)frame;
 {
-    NSLog(@"#%i",index);
+    
 }
 @end
