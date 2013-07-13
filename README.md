@@ -4,6 +4,9 @@ CXAdjustBlockView
 A self-management container(UIScrollView) of views(UIView) for iOS (iPhone/iPad) that make all the views linked on one direction relationship with animation scaling.
 
 ---
+![ScreenShot 1](https://s3.amazonaws.com/cocoacontrols_production/uploads/control_image/image/1378/image.png)
+
+
 **How to use**
 
 *Create a container(CXBlockScrollView).
