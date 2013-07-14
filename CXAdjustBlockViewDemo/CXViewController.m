@@ -44,6 +44,16 @@
     [self.view addSubview:scrollview];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    for (int i = 0; i < 4; i++)
+    {
+        [self addDemoBlockview];
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
