@@ -18,6 +18,13 @@ containerView = [[CXBlockScrollView alloc] initWithFrame:<#(CGRect)#>];
 UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 [containerView addBlockview:someView withSpacing:<#(NSUInteger)#>];
 ```
+
+*Use `insertBlockview:atIndex:withSpacing:` to insert view.
+```Objective-C 
+UIView *someView = [[UIView alloc] 
+[containerView insertBlockview:someView atIndex:<#(NSUInteger)#> withSpacing:<#(NSUInteger)#>];
+```
+
 *Use `removeBlockview:` to remove exist view.
 ```Objective-C 
 //someView has been added
@@ -43,7 +50,7 @@ UIView *someView = [[UIView alloc] initWithFrame:<#(CGRect)#>];
 
 ---
 ##Contact
-<a href="https://twitter.com/taterctl" class="twitter-follow-button" data-show-count="ture" data-lang="zh-tw">跟隨 @taterctl</a>
+<a href="https://twitter.com/taterctl" class="twitter-follow-button" data-show-count="ture" data-lang="zh-tw">Follow @taterctl</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
 ---

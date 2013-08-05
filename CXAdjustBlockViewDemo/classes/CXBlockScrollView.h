@@ -17,6 +17,7 @@
 @property (nonatomic) NSUInteger numbersOfBlockviews;
 
 - (void)addBlockview:(UIView *)view withSpacing:(NSUInteger)spacing;
+- (void)insertBlockview:(UIView *)view atIndex:(NSUInteger)index withSpacing:(NSUInteger)spacing;
 - (void)removeBlockview:(UIView *)view;
 - (CGRect)frameOfBlockview:(UIView *)view;
 

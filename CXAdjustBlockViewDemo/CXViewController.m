@@ -22,6 +22,8 @@
 
 - (void)addDemoBlockview;
 
+- (void)insertDemoBlockview;
+
 - (void)demoBlockviewTapAction:(UITapGestureRecognizer *)tap;
 
 - (void)demoBlockviewSwipAction:(UISwipeGestureRecognizer *)swip;
@@ -37,6 +39,7 @@
     number = 0;
         
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addDemoBlockview)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(insertDemoBlockview)];
     
     scrollview = [[CXBlockScrollView alloc] initWithFrame:self.view.frame];
     [scrollview setBlocksDelegate:self];
@@ -89,6 +92,37 @@
     
     [scrollview addBlockview:label withSpacing:10];
         
+    number ++;
+}
+
+- (void)insertDemoBlockview
+{
+    NSString *title = [NSString stringWithFormat:@"Blockview #%i",number];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake( 20, 0, 280, 50)];
+    [label setText:title];
+    [label setFont:[UIFont systemFontOfSize:14.]];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setUserInteractionEnabled:YES];
+    
+    [label.layer setMasksToBounds:YES];
+    [label.layer setCornerRadius:4.0];
+    [label.layer setBorderWidth:1.0];
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorRef colorref = CGColorCreate(colorSpace,(CGFloat[]){ 1, 1, 1, 1 });
+    [label.layer setBorderColor:colorref];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(demoBlockviewTapAction:)];
+    [label addGestureRecognizer:tap];
+    
+    UISwipeGestureRecognizer *swip = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(demoBlockviewSwipAction:)];
+    swip.direction = UISwipeGestureRecognizerDirectionRight;
+    [label addGestureRecognizer:swip];
+    
+    [scrollview insertBlockview:label atIndex:1 withSpacing:10];
+    
     number ++;
 }
 

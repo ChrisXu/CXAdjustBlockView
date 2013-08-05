@@ -13,7 +13,7 @@
 <CXAdjustBlockViewDelegate>
 {
     NSInteger bvTotalCount;
-    NSMutableArray *blockviews;
+    NSMutableArray *blockViews;
 }
 
 - (void)lastBlockviewDidFinishUpdated:(NSNotification *)notify;
@@ -28,7 +28,7 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        blockviews = [[NSMutableArray alloc] init];
+        blockViews = [[NSMutableArray alloc] init];
         bvTotalCount = 0;
     }
     return self;
@@ -37,7 +37,7 @@
 #pragma mark - PV
 - (void)lastBlockviewDidFinishUpdated:(NSNotification *)notify
 {
-    if ([notify object] == [blockviews lastObject])
+    if ([notify object] == [blockViews lastObject])
     {
         [self updateContentSize];
     }
@@ -45,7 +45,7 @@
 
 - (void)updateContentSize
 {
-    CXAdjustBlockView *lastBlockView = [blockviews lastObject];
+    CXAdjustBlockView *lastBlockView = [blockViews lastObject];
     CGFloat height = 0;
     height = CGRectGetMaxY(lastBlockView.frame);
     [self setContentSize:CGSizeMake(self.bounds.size.width, height)];
@@ -58,7 +58,7 @@
 #pragma mark - PB
 - (void)addBlockview:(UIView *)view withSpacing:(NSUInteger)spacing;
 {
-    CXAdjustBlockView *lastBlockView = [blockviews lastObject];
+    CXAdjustBlockView *lastBlockView = [blockViews lastObject];
     CXAdjustBlockView *blockView = [[CXAdjustBlockView alloc] initWithLinstenerView:lastBlockView];
     blockView.bvID = bvTotalCount;
     blockView.spacing = spacing;
@@ -77,14 +77,61 @@
     [blockView addSubview:view];
     [blockView setBackgroundColor:[UIColor clearColor]];
     
-    [blockviews addObject:blockView];
+    [blockViews addObject:blockView];
     [self addSubview:blockView];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastBlockviewDidFinishUpdated:) name:CXAdjustBlockViewUpdated object:blockView];
 }
 
+- (void)insertBlockview:(UIView *)view atIndex:(NSUInteger)index withSpacing:(NSUInteger)spacing
+{
+    NSInteger blockViewsCount = [blockViews count];
+    CXAdjustBlockView *previousBlockView = index > 0 ? [blockViews objectAtIndex:index - 1] : nil;
+    CXAdjustBlockView *blockView = nil;
+    CXAdjustBlockView *nextBlockView = [blockViews objectAtIndex:index];
+    
+    if (index > blockViewsCount - 1)
+    {
+        [self addBlockview:view withSpacing:spacing];
+        return;
+    }
+
+    blockView = [[CXAdjustBlockView alloc] initWithLinstenerView:previousBlockView];
+    blockView.bvID = bvTotalCount;
+    blockView.spacing = spacing;
+    blockView.delegate = self;
+    bvTotalCount ++;
+    
+    CGFloat offsetY = previousBlockView == nil ? 0 : CGRectGetMaxY(previousBlockView.frame);
+    [blockView setFrame:CGRectMake( 0, offsetY, self.bounds.size.width, view.frame.size.height + spacing)];
+    CGRect replaceFrame = CGRectZero;
+    replaceFrame.origin = CGPointMake(view.frame.origin.x, 0);
+    replaceFrame.size   = view.frame.size;
+    [view setFrame:replaceFrame];
+    
+    [blockView addSubview:view];
+    [blockView setBackgroundColor:[UIColor clearColor]];
+    
+    [nextBlockView setLinstener:blockView];
+    
+    [blockViews insertObject:blockView atIndex:index];
+    [self insertSubview:blockView belowSubview:nextBlockView];
+    
+    if (previousBlockView)
+    {
+        [previousBlockView updateLayoutWithDelegate:NO];
+    }
+    else
+    {
+        [UIView animateWithDuration:nextBlockView.duration animations:^{
+            [nextBlockView setFrame:CGRectMake( 0, 0, self.bounds.size.width, nextBlockView.frame.size.height)];
+        }];
+        [nextBlockView updateLayoutWithDelegate:YES];
+    }
+}
+
 - (void)removeBlockview:(UIView *)view
 {
-    NSInteger blockViewsCount = [blockviews count];
+    NSInteger blockViewsCount = [blockViews count];
     CXAdjustBlockView *previousBlockView = nil;
     CXAdjustBlockView *currentBlockView = nil;
     CXAdjustBlockView *nextBlockView = nil;
@@ -92,7 +139,7 @@
     
     for (int i = 0 ; i < blockViewsCount; i++)
     {
-        currentBlockView = [blockviews objectAtIndex:i];
+        currentBlockView = [blockViews objectAtIndex:i];
         for (UIView *targetView in [currentBlockView subviews])
         {
             if ([targetView isEqual:view])
@@ -100,12 +147,12 @@
                 _exist = YES;
                 if (i != 0)
                 {
-                    previousBlockView = [blockviews objectAtIndex:(i - 1)];
+                    previousBlockView = [blockViews objectAtIndex:(i - 1)];
                 }
                 
                 if (i != (blockViewsCount - 1))
                 {
-                    nextBlockView = [blockviews objectAtIndex:(i + 1)];
+                    nextBlockView = [blockViews objectAtIndex:(i + 1)];
                     [nextBlockView setLinstener:previousBlockView];
                 }
                 else
@@ -125,7 +172,7 @@
     }
     [currentBlockView setDelegate:nil];
     [currentBlockView removeFromSuperview];
-    [blockviews removeObject:currentBlockView];
+    [blockViews removeObject:currentBlockView];
     
     if (previousBlockView)
     {
@@ -142,11 +189,11 @@
 
 - (CGRect)frameOfBlockview:(UIView *)view
 {
-    NSInteger blockViewsCount = [blockviews count];
+    NSInteger blockViewsCount = [blockViews count];
     CXAdjustBlockView *currentBlockView = nil;
     for (int i = 0 ; i < blockViewsCount; i++)
     {
-        currentBlockView = [blockviews objectAtIndex:i];
+        currentBlockView = [blockViews objectAtIndex:i];
         for (UIView *targetView in [currentBlockView subviews])
         {
             if ([targetView isEqual:view])
@@ -164,10 +211,10 @@
 {
     if (_blocksDelegate && [_blocksDelegate respondsToSelector:@selector(blockScrollView:didAnimatedAtIndex:frame:)])
     {
-        NSInteger blockViewsCount = [blockviews count];
+        NSInteger blockViewsCount = [blockViews count];
         for (int index = 0; index < blockViewsCount; index ++)
         {
-            CXAdjustBlockView *blockview = [blockviews objectAtIndex:index];
+            CXAdjustBlockView *blockview = [blockViews objectAtIndex:index];
             if (blockview.bvID == bvID)
             {
                 [_blocksDelegate blockScrollView:self didAnimatedAtIndex:index frame:blockview.frame];
