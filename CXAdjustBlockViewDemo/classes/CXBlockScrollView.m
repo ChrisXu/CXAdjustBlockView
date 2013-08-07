@@ -85,15 +85,15 @@
 - (void)insertBlockview:(UIView *)view atIndex:(NSUInteger)index withSpacing:(NSUInteger)spacing
 {
     NSInteger blockViewsCount = [blockViews count];
-    CXAdjustBlockView *previousBlockView = index > 0 ? [blockViews objectAtIndex:index - 1] : nil;
-    CXAdjustBlockView *blockView = nil;
-    CXAdjustBlockView *nextBlockView = [blockViews objectAtIndex:index];
-    
     if (index > blockViewsCount - 1)
     {
         [self addBlockview:view withSpacing:spacing];
         return;
     }
+    
+    CXAdjustBlockView *previousBlockView = index > 0 ? [blockViews objectAtIndex:index - 1] : nil;
+    CXAdjustBlockView *blockView = nil;
+    CXAdjustBlockView *nextBlockView = [blockViews objectAtIndex:index];
 
     blockView = [[CXAdjustBlockView alloc] initWithLinstenerView:previousBlockView];
     blockView.bvID = bvTotalCount;
