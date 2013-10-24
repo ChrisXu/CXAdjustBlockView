@@ -85,7 +85,7 @@
 - (void)insertBlockview:(UIView *)view atIndex:(NSUInteger)index withSpacing:(NSUInteger)spacing
 {
     NSInteger blockViewsCount = [blockViews count];
-    if (index > blockViewsCount - 1)
+    if (blockViewsCount == 0 || index > blockViewsCount - 1)
     {
         [self addBlockview:view withSpacing:spacing];
         return;
